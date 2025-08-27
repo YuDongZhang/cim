@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: zookeeper:3.9.2
+    container_name: cim-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
+
+  redis:
+    image: redis:7.4.0
+    container_name: cim-redis
+    ports:
+      - "6379:6379"
+      
+  cim-route:
+    image: ghcr.io/crossoverjie/allin1-ubuntu:latest
+    container_name: cim-route
+    ports:
+      - "8083:8083"
+    depends_on:
+      - zookeeper
+      - redis
+    environment:
+      - SERVER_PORT=8083
